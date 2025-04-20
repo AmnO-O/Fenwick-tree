@@ -7,7 +7,7 @@ ll random(ll l, ll r) {
 }
 
 void genTest(int I) {
-	ofstream fout("../Testcases/Testcase_" + to_string(I) + ".txt");
+	ofstream fout("Testcases/Testcase_" + to_string(I) + ".txt");
 	
 	int n = random(100, 5e5); // length of the array
 	int m = random(100, 6e5); // number of queries
@@ -29,6 +29,8 @@ void genTest(int I) {
 		}
 		else fout << 1 << ' ' << random(1, n) << ' ' << random(1, 1e5) << '\n';
 	}
+
+	fout.close(); 
 }
 
 void genTest(int l, int r) {
@@ -36,7 +38,7 @@ void genTest(int l, int r) {
 }
 
 void genSpecialTest(int n, int m ){
-	ofstream fout("../Testcases/smallTest.txt");
+	ofstream fout("Testcases/smallTest.txt");
 	
 	fout << n << ' ' << m << '\n';
 	
@@ -57,4 +59,6 @@ void genSpecialTest(int n, int m ){
 	}
 
 	cout << "Named the test case: smallTest\n";
+
+	fout.close(); 
 }

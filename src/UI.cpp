@@ -56,13 +56,13 @@ void process(){
         if(input == 'r'){
             cout << "Enter the filename: ";
             string filename; cin >> filename;
-            runTestCase("../Testcases/" + filename + ".txt"); 
+            runTestCase("Testcases/" + filename + ".txt"); 
         }
 
         if(input == 'i'){
             cout << "Enter the input file name: ";
             string filename; cin >> filename;
-			string path = "../Testcases/" + filename + ".txt";
+			string path = "Testcases/" + filename + ".txt";
             ofstream fout(path);
             
             int n, m;
@@ -71,21 +71,26 @@ void process(){
 
             fout << n << ' ' << m << '\n'; 
 
-            cout << "Enter the elements: ";
+            cout << "Enter " << n << " elements: ";
             for (int i = 0; i < n; i++){
                 int x; cin >> x; 
                 fout << x << ' '; 
             }
+            
+            cout << '\n'; 
 
-            fout << '\n';
+            fout << "\n";
 
-            cout << "Enter the queries (type, l, r):\n";
+            cout << "Please enter " << m << " queries(type, l, r) :\n";
 			cout << "Format (1 2 3): update a[2] += 3\n";
-			cout << "Format (2 2 3): get sum: 2 -> 3\n\n";
+			cout << "Format (2 2 3): get sum: 2 -> 3\n";
+            cout << "1: update, 2: query\n\n";
 
             
             for (int i = 0; i < m; i++){
                 int type, l, r; 
+                cout << "Please enter query type: ";
+
                 cin >> type; 
 
 				if (type != 1 && type != 2) {
@@ -105,6 +110,8 @@ void process(){
                     cout << "Enter the value to add: ";
 					int value; cin >> value;
 					fout << type << ' ' << l << ' ' << value << '\n';
+                    
+                    cout << "\n"; 
 				}
 				else {
                     cout << "Enter the range (l, r): "; cin >> l >> r; 
@@ -116,12 +123,12 @@ void process(){
 					}
 
 					fout << type << ' ' << l << ' ' << r << '\n';
-				}
 
-                fout << type << ' ' << l << ' ' << r << '\n'; 
+                    cout << "\n"; 
+				}
             }
-            
-            cout << "Test case saved to " << filename << "\n\n";
+			fout.close();
+            cout << "Test case saved to file name: " << filename << "\n\n";
         }
 
         if(input == 's'){
@@ -144,7 +151,7 @@ void process(){
 		if (input == 'p') {
 			cout << "Enter the filename: ";
 			string filename; cin >> filename;
-			ifstream fin("../Testcases/" + filename + ".txt");
+			ifstream fin("Testcases/" + filename + ".txt");
 			
             if (!fin) {
 				cout << "Error opening file: " + filename + "\n\n";
@@ -156,6 +163,8 @@ void process(){
 				cout << line << '\n';
 			}
 			cout << "\n";
+
+            fin.close(); 
 		}
         
         if(input == 'h'){

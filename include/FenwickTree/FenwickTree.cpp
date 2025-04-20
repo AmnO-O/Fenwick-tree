@@ -83,10 +83,10 @@ void runTestCase(const string filename){
 
     std::cout << "Execution time using Fenwicktree on " + filename + ": " << timeElapsed << " s\n"; 
         
-	
+	fin.close(); 
 }
 
 void runTestCase(int I){
-	string filename = "../Testcases/Testcase_" + to_string(I) + ".txt"; // Construct the filename
+	string filename = "Testcases/Testcase_" + to_string(I) + ".txt"; // Construct the filename
 	runTestCase(filename); // Call the function with the constructed filename
 }
