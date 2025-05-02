@@ -1,176 +1,300 @@
 #include "UI.h"
 #include "../include/FenwickTree/Fenwicktree.h"
 #include "../include/Generate_Test/genTest.h"
+#include <iostream>
+#include <fstream>
+#include <string>
+#include <map>
+#include <functional>
+#include <limits>
+#include <algorithm>
+#include <cctype>
 
-
-void printHelp() {
-    cout << "\nFenwick Tree\n";
-    cout << "A Fenwick Tree implementation in C++\n";
-
-    cout << "1: update, 2: query\n";
-    cout << "Testcases are generated in the Testcases folder\n\n";
-
-    cout << "Usage: [options]\n";
-    cout << "Options:\n";
-    
-    cout << "  -g, --generate    Generate random test cases\n";
-    cout << "  -s, --small       Generate small test cases\n";
-    cout << "  -r, --run         Run test cases\n";
-    cout << "  -p, --print       Print test cases\n";
-    cout << "  -i, --input       Input your own testcase\n";
-    cout << "  -e, --exit        Exit the program\n";
-    cout << "  -c, --clear       Clear the screen\n";
-    cout << "  -h, --help        Show this help message\n\n";
+// Clear screen function that works across platforms
+void clearScreen() {
+#ifdef _WIN32
+    system("cls");
+#else
+    system("clear"); // For Unix/Linux/MacOS
+#endif
+    std::cout << "Screen cleared.\n\n";
 }
 
-void process(){
-    int choice = 0; 
+// Print help menu with available commands
+void printHelp() {
+    std::cout << "\n====== Fenwick Tree ======\n";
+    std::cout << "A Fenwick Tree implementation in C++\n\n";
 
-    printHelp(); 
+    std::cout << "Available Commands:\n";
+    std::cout << "  g, generate    - Generate random test cases\n";
+    std::cout << "  s, small       - Generate small test cases\n";
+    std::cout << "  r, run         - Run test cases\n";
+    std::cout << "  v, verify      - Verify test case correctness\n";
+    std::cout << "  b, benchmark   - Benchmark test case performance\n";
+    std::cout << "  p, print       - Print test cases\n";
+    std::cout << "  i, input       - Input your own testcase\n";
+    std::cout << "  c, clear       - Clear the screen\n";
+    std::cout << "  h, help        - Show this help message\n";
+    std::cout << "  e, exit        - Exit the program\n\n";
 
-    while(true){
-        char input; 
-        cout << "Enter your choice: ";
+    std::cout << "For queries:\n";
+    std::cout << "  1: update [index] [value] - Update value at index\n";
+    std::cout << "  2: query [left] [right]   - Get sum from left to right\n\n";
+}
 
-        cin >> input;
-
-        if(input != '-'){
-            cout << "Invalid choice. Please try again.\n\n"; 
-            continue; 
-        }
-
-        cin >> input; 
-        
-        if(input != 'g' && input != 'r' && input != 'i' && input != 's'  && input != 'e' && input != 'h' && input != 'p' && input != 'c') {
-            cout << "Invalid choice. Please try again.\n\n"; 
-            continue;
-        }
-
-        if(input == 'g'){
-            cout << "Enter the test case number: ";
-            int number; cin >> number; 
-            genTest(number); 
-            cout << "We have generated " << number << " test cases.\n\n";
-        }
-
-        if(input == 'r'){
-            cout << "Enter the filename: ";
-            string filename; cin >> filename;
-            runTestCase("Testcases/" + filename + ".txt"); 
-        }
-
-        if(input == 'i'){
-            cout << "Enter the input file name: ";
-            string filename; cin >> filename;
-			string path = "Testcases/" + filename + ".txt";
-            ofstream fout(path);
-            
-            int n, m;
-            cout << "Enter the number of elements and queries (n, m): ";
-            cin >> n >> m;
-
-            fout << n << ' ' << m << '\n'; 
-
-            cout << "Enter " << n << " elements: ";
-            for (int i = 0; i < n; i++){
-                int x; cin >> x; 
-                fout << x << ' '; 
+// Safely get integer input with validation
+int getIntInput(const std::string& prompt, int minValue, int maxValue) {
+    int value;
+    while (true) {
+        std::cout << prompt;
+        if (std::cin >> value) {
+            if (value >= minValue && value <= maxValue) {
+                break;
             }
-            
-            cout << '\n'; 
-
-            fout << "\n";
-
-            cout << "Please enter " << m << " queries(type, l, r) :\n";
-			cout << "Format (1 2 3): update a[2] += 3\n";
-			cout << "Format (2 2 3): get sum: 2 -> 3\n";
-            cout << "1: update, 2: query\n\n";
-
-            
-            for (int i = 0; i < m; i++){
-                int type, l, r; 
-                cout << "Please enter query type: ";
-
-                cin >> type; 
-
-				if (type != 1 && type != 2) {
-					cout << "Invalid query type. Please enter 1 or 2.\n";
-					i--; // Decrement i to repeat this iteration
-					continue;
-				}
-
-				if (type == 1){
-                    cout << "Enter the index to update: "; cin >> l; 
-					if (l < 1 || l > n) {
-						cout << "Invalid index. Please enter a valid index between 1 and " << n << ".\n";
-						i--; // Decrement i to repeat this iteration
-						continue;
-					}
-
-                    cout << "Enter the value to add: ";
-					int value; cin >> value;
-					fout << type << ' ' << l << ' ' << value << '\n';
-                    
-                    cout << "\n"; 
-				}
-				else {
-                    cout << "Enter the range (l, r): "; cin >> l >> r; 
-
-					if (l < 1 || l > n || r < 1 || r > n || l > r) {
-						cout << "Invalid range. Please enter valid indices between 1 and " << n << ", with l <= r.\n";
-						i--; // Decrement i to repeat this iteration
-						continue;
-					}
-
-					fout << type << ' ' << l << ' ' << r << '\n';
-
-                    cout << "\n"; 
-				}
-            }
-			fout.close();
-            cout << "Test case saved to file name: " << filename << "\n\n";
+            std::cout << "Value must be between " << minValue << " and " << maxValue << ".\n";
         }
-
-        if(input == 's'){
-            cout << "Enter the number of elements and queries (n, m): ";
-            int n, m; cin >> n >> m;
-            genSpecialTest(n, m);
-            cout << "Small test case generated with " << n << " elements and " << m << " queries.\n\n";
+        else {
+            std::cin.clear();
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+            std::cout << "Invalid input. Please enter a number.\n";
         }
-        
-        if(input == 'e'){
-            cout << "Exiting the program...\n"; 
-            break; 
+    }
+    return value;
+}
+
+// Get string input with validation
+std::string getStringInput(const std::string& prompt) {
+    std::string input;
+    std::cout << prompt;
+    std::cin >> input;
+    return input;
+}
+
+// Get yes/no input from user
+bool getYesNoInput(const std::string& prompt) {
+    std::string input;
+    while (true) {
+        std::cout << prompt << " (y/n): ";
+        std::cin >> input;
+
+        // Convert to lowercase for case-insensitive comparison
+        std::transform(input.begin(), input.end(), input.begin(),
+            [](unsigned char c) { return std::tolower(c); });
+
+        if (input == "y" || input == "yes") {
+            return true;
         }
-
-        if (input == 'c') {
-            system("cls"); // Clear the console screen
-			cout << "Screen cleared.\n\n";
+        else if (input == "n" || input == "no") {
+            return false;
         }
-
-		if (input == 'p') {
-			cout << "Enter the filename: ";
-			string filename; cin >> filename;
-			ifstream fin("Testcases/" + filename + ".txt");
-			
-            if (!fin) {
-				cout << "Error opening file: " + filename + "\n\n";
-				continue;
-			}
-
-			string line;
-			while (getline(fin, line)) {
-				cout << line << '\n';
-			}
-			cout << "\n";
-
-            fin.close(); 
-		}
-        
-        if(input == 'h'){
-            printHelp(); 
+        else {
+            std::cout << "Please enter 'y' or 'n'.\n";
         }
     }
 }
 
+// Generate random test cases
+void handleGenerateTestCase() {
+    int number = getIntInput("Enter the number of test cases to generate: ", 1, 100);
+    genTest(number);
+    std::cout << "Successfully generated " << number << " test cases.\n\n";
 
+    bool runAfterGenerate = getYesNoInput("Would you like to run one of the generated test cases?");
+    if (runAfterGenerate) {
+        int testNum = getIntInput("Enter the test case number to run (1-" + std::to_string(number) + "): ", 1, number);
+        bool verifyResults = getYesNoInput("Would you like to verify the results?");
+        runTestCase(testNum, verifyResults);
+    }
+}
+
+// Generate small test case
+void handleGenerateSmallTest() {
+    int n = getIntInput("Enter the number of elements: ", 1, 1000);
+    int m = getIntInput("Enter the number of queries: ", 1, 1000);
+    genSpecialTest(n, m);
+    std::cout << "Small test case generated with " << n << " elements and " << m << " queries.\n\n";
+
+    bool runAfterGenerate = getYesNoInput("Would you like to run this test case?");
+    if (runAfterGenerate) {
+        bool verifyResults = getYesNoInput("Would you like to verify the results?");
+        runTestCase("Testcases/smallTest.txt", verifyResults);
+    }
+}
+
+// Run a test case
+void handleRunTestCase() {
+    std::string filename = getStringInput("Enter the filename (without .txt extension): ");
+    std::string fullPath = "Testcases/" + filename + ".txt";
+
+    // Check if file exists before attempting to run
+    std::ifstream testFile(fullPath);
+    if (!testFile) {
+        std::cout << "Error: File '" << fullPath << "' not found.\n\n";
+        return;
+    }
+    testFile.close();
+
+    bool verifyResults = getYesNoInput("Would you like to verify the results?");
+    runTestCase(fullPath, verifyResults);
+
+    bool benchmarkAfterRun = getYesNoInput("Would you like to run a benchmark on this test case?");
+    if (benchmarkAfterRun) {
+        benchmarkTestCase(fullPath);
+    }
+}
+
+// Verify a test case for correctness
+void handleVerifyTestCase() {
+    std::string filename = getStringInput("Enter the filename (without .txt extension): ");
+    std::string fullPath = "Testcases/" + filename + ".txt";
+
+    // Check if file exists before attempting to verify
+    std::ifstream testFile(fullPath);
+    if (!testFile) {
+        std::cout << "Error: File '" << fullPath << "' not found.\n\n";
+        return;
+    }
+    testFile.close();
+
+    std::cout << "Verifying test case: " << filename << "...\n";
+    bool result = verifyTestCase(fullPath);
+
+    if (result) {
+        std::cout << "✓ Verification PASSED: All results match the naive implementation.\n\n";
+    }
+    else {
+        std::cout << "✗ Verification FAILED: Results do not match the naive implementation.\n\n";
+    }
+}
+
+void handleBenchmarkTestCase() {
+    std::string filename = getStringInput("Enter the filename (without .txt extension): ");
+    std::string fullPath = "Testcases/" + filename + ".txt";
+
+    // Check if file exists before attempting to benchmark
+    std::ifstream testFile(fullPath);
+    if (!testFile) {
+        std::cout << "Error: File '" << fullPath << "' not found.\n\n";
+        return;
+    }
+    testFile.close();
+
+    benchmarkTestCase(fullPath);
+}
+
+void handlePrintTestCase() {
+    std::string filename = getStringInput("Enter the filename (without .txt extension): ");
+    std::string fullPath = "Testcases/" + filename + ".txt";
+    std::ifstream fin(fullPath);
+
+    if (!fin) {
+        std::cout << "Error: File '" << fullPath << "' not found.\n\n";
+        return;
+    }
+
+    std::cout << "\n===== Contents of " << filename << ".txt =====\n";
+    std::string line;
+    while (getline(fin, line)) {
+        std::cout << line << '\n';
+    }
+    std::cout << "\n";
+    fin.close();
+}
+
+void handleInputTestCase() {
+    std::string filename = getStringInput("Enter the filename (without .txt extension): ");
+    std::string path = "Testcases/" + filename + ".txt";
+    std::ofstream fout(path);
+
+    if (!fout) {
+        std::cout << "Error: Could not create file '" << path << "'\n\n";
+        return;
+    }
+
+    int n = getIntInput("Enter the number of elements: ", 1, 1000000);
+    int m = getIntInput("Enter the number of queries: ", 1, 1000000);
+
+    fout << n << ' ' << m << '\n';
+
+    std::cout << "Enter " << n << " elements (space-separated): ";
+    for (int i = 0; i < n; i++) {
+        int x;
+        std::cin >> x;
+        fout << x << ' ';
+    }
+    fout << '\n';
+
+    std::cout << "\nEnter " << m << " queries:\n";
+    std::cout << "Format: 1 [index] [value] - Update array[index] += value\n";
+    std::cout << "Format: 2 [left] [right]  - Query sum from left to right\n\n";
+
+    for (int i = 0; i < m; i++) {
+        std::cout << "Query " << (i + 1) << "/" << m << ": ";
+        int type = getIntInput("Type (1 for update, 2 for query): ", 1, 2);
+
+        if (type == 1) {
+            int index = getIntInput("Index to update (1 to " + std::to_string(n) + "): ", 1, n);
+            int value = getIntInput("Value to add: ");
+            fout << type << ' ' << index << ' ' << value << '\n';
+        }
+        else {
+            int left = getIntInput("Left bound (1 to " + std::to_string(n) + "): ", 1, n);
+            int right = getIntInput("Right bound (" + std::to_string(left) + " to " + std::to_string(n) + "): ", left, n);
+            fout << type << ' ' << left << ' ' << right << '\n';
+        }
+    }
+
+    fout.close();
+    std::cout << "Test case saved to file: " << path << "\n\n";
+
+    bool runAfterCreate = getYesNoInput("Would you like to run this test case?");
+    if (runAfterCreate) {
+        bool verifyResults = getYesNoInput("Would you like to verify the results?");
+        runTestCase(path, verifyResults);
+    }
+}
+
+void process() {
+    // Map commands to handler functions for cleaner dispatch
+    std::map<std::string, std::function<void()>> commandHandlers = {
+        {"g", handleGenerateTestCase}, {"generate", handleGenerateTestCase},
+        {"s", handleGenerateSmallTest}, {"small", handleGenerateSmallTest},
+        {"r", handleRunTestCase}, {"run", handleRunTestCase},
+        {"v", handleVerifyTestCase}, {"verify", handleVerifyTestCase},
+        {"b", handleBenchmarkTestCase}, {"benchmark", handleBenchmarkTestCase},
+        {"p", handlePrintTestCase}, {"print", handlePrintTestCase},
+        {"i", handleInputTestCase}, {"input", handleInputTestCase},
+        {"c", clearScreen}, {"clear", clearScreen},
+        {"h", printHelp}, {"help", printHelp}
+    };
+
+    printHelp();
+
+    while (true) {
+        std::string command;
+        std::cout << "Enter command (or 'h' for help): ";
+        std::cin >> command;
+
+        // Remove leading dash if present for flexibility
+        if (!command.empty() && command[0] == '-') {
+            command = command.substr(1);
+        }
+
+        if (command == "e" || command == "exit") {
+            std::cout << "Exiting the program. Goodbye!\n";
+            break;
+        }
+
+        auto it = commandHandlers.find(command);
+        if (it != commandHandlers.end()) {
+            // Call the appropriate handler function
+            it->second();
+        }
+        else {
+            std::cout << "Unknown command: '" << command << "'. Type 'h' for help.\n\n";
+        }
+
+        // Clear input buffer to prevent issues with subsequent input
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+    }
+}
