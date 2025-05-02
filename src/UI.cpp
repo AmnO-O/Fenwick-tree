@@ -95,13 +95,13 @@ bool getYesNoInput(const std::string& prompt) {
 
 // Generate random test cases
 void handleGenerateTestCase() {
-    int number = getIntInput("Enter the number of test cases to generate: ", 1, 100);
+    int number = getIntInput("Enter the id of test case you want to generate (eg: 1): ", 1, 100);
     genTest(number);
-    std::cout << "Successfully generated " << number << " test cases.\n\n";
+    std::cout << "Successfully generated: Testcase_" << number << ".txt\n\n";
 
     bool runAfterGenerate = getYesNoInput("Would you like to run one of the generated test cases?");
     if (runAfterGenerate) {
-        int testNum = getIntInput("Enter the test case number to run (1-" + std::to_string(number) + "): ", 1, number);
+        int testNum = getIntInput("Enter the test case number to run (1, 2, 3, ...): ", 1, number);
         bool verifyResults = getYesNoInput("Would you like to verify the results?");
         runTestCase(testNum, verifyResults);
     }
