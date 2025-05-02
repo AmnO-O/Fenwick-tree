@@ -15,7 +15,12 @@ public:
     void update(int index, T value); // Update the value at index
 	T get(int index); // Get the sum in the range [1, index]
 	T range_query(int l, int r); // Get the sum in the range [l, r]
+	T kth_query(int k); // Get the k-th smallest element
 }; 
 
-void runTestCase(int I); // Run test case I
-void runTestCase(const string filename = ""); // Run test case I
+void runTestCase(const string filename, bool verify = false);
+void runTestCase(int I, bool verify = false);
+
+
+bool verifyTestCase(const string filename);
+void benchmarkTestCase(const string filename);
